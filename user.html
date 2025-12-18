@@ -4,95 +4,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>بحوث الترابية </title>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
     <style>
         body { font-family: 'Segoe UI', sans-serif; background: #fafafa; margin: 0; direction: rtl; color: #333; }
-
-.header { 
-
-background: linear-gradient(135deg, #34495e, #8b5b29);
-
-color: white; 
-padding: 40px 20px; 
-text-align: center; 
-max-height: 150px;
-border: 5px solid white;
-font-weight: bolder;
-
-
-}
-.header h1{
-
-transform: translateY(-80%);
-
-
-}
-.header p{
-
-font-size: 15px;
-padding: 20px;
-transform: translateY(-35%);
-background:#fafafa;
-color: green;
-border-radius: 20px;
-
-}
-        
-        
-.cat-list { display: flex; flex-direction: column; align-items: center; padding: 25px; gap: 15px; }
+        .header { background: linear-gradient(135deg, #34495e, #8b5b29); color: white; padding: 40px 20px; text-align: center; max-height: 150px; border: 5px solid white; font-weight: bolder; }
+        .header h1{ transform: translateY(-80%); }
+        .header p{ font-size: 15px; padding: 20px; transform: translateY(-35%); background:#fafafa; color: green; border-radius: 20px; }
+        .cat-list { display: flex; flex-direction: column; align-items: center; padding: 25px; gap: 15px; }
         .btn-cat { width: 100%; max-width: 450px; padding: 20px; background: white; border: 2px solid #8b5b29; color: #8b5b29; border-radius: 12px; font-size: 1.2rem; font-weight: bold; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.05); transition: 0.2s; }
         .btn-cat:active { transform: translateY(2px); }
-
         /* واجهة البحث (داخل القسم) */
-.res-view { 
-width: 80%; 
-max-width: 650px; 
-margin: 0 ; 
-display: none; 
-padding-bottom: 40px; 
-}
-        
+        .res-view { width: 80%; max-width: 650px; margin: 0 auto; display: none; padding-bottom: 40px; }
         .search-box-wrapper { position: sticky; top: 10px; z-index: 100; margin-bottom: 20px; }
         .inner-search { width: 100%; padding: 15px 45px 15px 15px; border-radius: 30px; border: 2px solid #8b5b29; font-size: 1rem; box-shadow: 0 4px 12px rgba(0,0,0,0.15); outline: none; }
         .search-icon-inside { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); font-size: 1.2rem; }
-
-.card { 
-padding: 25px; 
-border-radius: 20px; 
-box-shadow: 0 4px 10px rgba(0,0,0,0.05); 
-margin-bottom: 20px; 
-border-right: 5px solid #black; transition: 0.3s; 
-transform: translate(-10%);
-}
-
-
-.card h3 { 
-color: black; 
-font-size: 1rem; 
-font-weight: bolder;
-margin-top: 0; 
-border-bottom: 5px solid black; 
-padding-bottom: 10px; 
-
-}
-.card p { 
-font-size: 1rem; 
-line-height: 1.8; 
-white-space: 
-pre-wrap; 
-
-}
-.highlight { 
-background: #ffeb3b; 
-padding: 0 2px; 
-border-radius: 3px; 
-
-}
-
-.back-btn { 
-background: #444; 
-color: white; 
-border: none; 
-padding: 10px 20px; border-radius: 8px; margin: 15px 0; cursor: pointer; }
+        .card { padding: 25px; border-radius: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); margin-bottom: 20px; border-right: 5px solid black; transition: 0.3s; transform: translate(-10%); }
+        .card h3 { color: black; font-size: 1rem; font-weight: bolder; margin-top: 0; border-bottom: 5px solid black; padding-bottom: 10px; }
+        .card p { font-size: 1rem; line-height: 1.8; white-space: pre-wrap; }
+        .highlight { background: #ffeb3b; padding: 0 2px; border-radius: 3px; }
+        .back-btn { background: #444; color: white; border: none; padding: 10px 20px; border-radius: 8px; margin: 15px 0; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -100,14 +31,13 @@ padding: 10px 20px; border-radius: 8px; margin: 15px 0; cursor: pointer; }
 <div class="header" id="mainH">
     <h1> بحوث الترابية</h1>
     <p> أبي عبد الله عليه السلام قال: لوددت أن أصحابي ضربت رؤوسهم بالسياط حتى يتفقهوا
-<br>
-<br>
-
-لَذِكْرَى لِمَنْ كَانَ لَهُ قَلْبٌ
- </p>
+        <br><br> لَذِكْرَى لِمَنْ كَانَ لَهُ قَلْبٌ
+    </p>
 </div>
 
-<div id="view1" class="cat-list"></div>
+<div id="view1" class="cat-list">
+    <p style="color:#8b5b29;">جارِ تحميل البحوث...</p>
+</div>
 
 <div id="view2" class="res-view">
     <button class="back-btn" onclick="showV1()">🔙 العودة للأقسام</button>
@@ -121,13 +51,62 @@ padding: 10px 20px; border-radius: 8px; margin: 15px 0; cursor: pointer; }
 </div>
 
 <script>
-    let db = JSON.parse(localStorage.getItem('myLibV2') || '{}');
+    // 2. إعدادات Firebase (نفس التي في الأدمن)
+    const firebaseConfig = {
+        apiKey: "AIzaSyA3Qp8zzy6FIs1g5ed0HXBkd9FykxGvGR8",
+        authDomain: "alturbya.firebaseapp.com",
+        projectId: "alturbya",
+        storageBucket: "alturbya.firebasestorage.app",
+        messagingSenderId: "481479317412",
+        appId: "1:481479317412:web:8f070dbc4c87ba5aa59331"
+    };
+
+    // تهيئة Firebase
+    if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+    }
+    const firestore = firebase.firestore();
+
+    // متغير لتخزين البيانات القادمة من السحاب
+    let dbData = {}; 
     let currentCategory = "";
 
+    // 3. جلب البيانات من السحاب لحظياً
+    firestore.collection("researches").onSnapshot((snapshot) => {
+        // تفريغ البيانات القديمة وإعادة بنائها
+        let tempDB = {};
+        
+        snapshot.forEach(doc => {
+            const item = doc.data();
+            const cat = item.category || "عام";
+            
+            // تجميع البحوث حسب اسم القسم
+            if (!tempDB[cat]) tempDB[cat] = [];
+            tempDB[cat].push(item);
+        });
+
+        dbData = tempDB; // تحديث المتغير الرئيسي
+        init(); // إعادة رسم الأقسام
+
+        // إذا كان المستخدم داخل قسم معين، نقوم بتحديث محتواه أيضاً
+        if (currentCategory && document.getElementById('view2').style.display === 'block') {
+            renderResearches(dbData[currentCategory] || []);
+        }
+    }, (error) => {
+        console.error("Error getting data: ", error);
+        document.getElementById('view1').innerHTML = '<p>حدث خطأ في الاتصال بالسحاب</p>';
+    });
+
     function init() {
-        const v1 = document.getElementById('view1'); v1.innerHTML = '';
-        const keys = Object.keys(db);
-        if(keys.length === 0) v1.innerHTML = '<p>المكتبة فارغة حالياً</p>';
+        const v1 = document.getElementById('view1'); 
+        v1.innerHTML = '';
+        const keys = Object.keys(dbData);
+        
+        if(keys.length === 0) {
+            v1.innerHTML = '<p>المكتبة فارغة حالياً</p>';
+            return;
+        }
+
         keys.forEach(c => {
             const b = document.createElement('button');
             b.className = 'btn-cat';
@@ -143,7 +122,7 @@ padding: 10px 20px; border-radius: 8px; margin: 15px 0; cursor: pointer; }
         document.getElementById('mainH').style.display = 'none';
         document.getElementById('view2').style.display = 'block';
         document.getElementById('innerSearch').value = '';
-        renderResearches(db[c]);
+        renderResearches(dbData[c]);
         window.scrollTo(0,0);
     }
 
@@ -151,6 +130,8 @@ padding: 10px 20px; border-radius: 8px; margin: 15px 0; cursor: pointer; }
         const out = document.getElementById('output');
         out.innerHTML = `<h2 style="color:#8b5b29; text-align:center;">${currentCategory}</h2>`;
         
+        if (!data) return;
+
         data.forEach(r => {
             if(term && !r.t.includes(term) && !r.x.includes(term)) return;
             
@@ -161,7 +142,7 @@ padding: 10px 20px; border-radius: 8px; margin: 15px 0; cursor: pointer; }
             }
 
             out.innerHTML += `
-                <div class="card" style="background-color: ${r.color}">
+                <div class="card" style="background-color: ${r.color || '#ffffff'}">
                     <h3>${r.t}</h3>
                     <p>${text}</p>
                 </div>`;
@@ -169,7 +150,7 @@ padding: 10px 20px; border-radius: 8px; margin: 15px 0; cursor: pointer; }
     }
 
     document.getElementById('innerSearch').oninput = function(e) {
-        renderResearches(db[currentCategory], e.target.value);
+        renderResearches(dbData[currentCategory], e.target.value);
     };
 
     function showV1() {
@@ -177,8 +158,6 @@ padding: 10px 20px; border-radius: 8px; margin: 15px 0; cursor: pointer; }
         document.getElementById('mainH').style.display = 'block';
         document.getElementById('view2').style.display = 'none';
     }
-
-    init();
 </script>
 </body>
 </html>
