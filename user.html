@@ -10,119 +10,102 @@
         body { 
             font-family: 'Segoe UI', sans-serif; 
             background: radial-gradient(circle at center, #2c5364, #203a43, #0f2027); 
-            margin: 0; 
-            direction: rtl; 
-            color: white; 
-            min-height: 100vh;
-            background-attachment: fixed;
+            margin: 0; direction: rtl; color: white; min-height: 100vh; background-attachment: fixed;
         }
 
         /* الهيدر المطور */
         .header { 
-            display: flex;
-            flex-direction: column;
-            background: rgba(255, 255, 255, 0.05); 
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            padding: 30px 20px; 
-            border-bottom: 2px solid rgba(212, 175, 55, 0.3);
+            display: flex; flex-direction: column; background: rgba(255, 255, 255, 0.05); 
+            backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+            padding: 30px 20px; border-bottom: 2px solid rgba(212, 175, 55, 0.3);
         }
 
-        .header-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            width: 100%;
-            margin-bottom: 25px;
-        }
+        .header-top { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 25px; }
 
         .home-btn {
-            background: rgba(212, 175, 55, 0.15);
-            color: #d4af37;
-            border: 1px solid #d4af37;
-            padding: 8px 15px;
-            border-radius: 20px;
-            text-decoration: none;
-            font-size: 0.85rem;
-            font-weight: bold;
+            background: rgba(212, 175, 55, 0.15); color: #d4af37; border: 1px solid #d4af37;
+            padding: 8px 15px; border-radius: 20px; text-decoration: none; font-size: 0.85rem; font-weight: bold;
         }
 
-        /* شريط البحث العلوي - ثابت وصغير لتجنب مشاكل اللمس */
         .inner-search { 
-            width: 110px; 
-            padding: 8px 30px 8px 10px;
-            border-radius: 15px; 
+            width: 110px; padding: 8px 30px 8px 10px; border-radius: 15px; 
             border: 1px solid rgba(255, 255, 255, 0.3); 
             background: rgba(255, 255, 255, 0.1) url('https://cdn-icons-png.flaticon.com/512/622/622669.png') no-repeat right 10px center;
-            background-size: 14px;
-            color: white;
-            font-size: 0.8rem; 
-            outline: none; 
+            background-size: 14px; color: white; font-size: 0.8rem; outline: none; 
         }
 
-        /* حاوية النص الشريف */
         .quote-box {
-            text-align: center;
-            max-width: 600px;
-            margin: 0 auto;
-            background: rgba(0, 0, 0, 0.3);
-            padding: 20px;
-            border-radius: 20px;
-            border: 1px dashed rgba(212, 175, 55, 0.4);
-            position: relative;
+            text-align: center; max-width: 600px; margin: 0 auto; background: rgba(0, 0, 0, 0.3);
+            padding: 20px; border-radius: 20px; border: 1px dashed rgba(212, 175, 55, 0.4);
         }
 
-        .quote-text {
-            margin: 0;
-            font-size: 1rem;
-            line-height: 1.7;
-            color: #fff;
-            font-style: italic;
-        }
-
-        .quran-text {
-            margin: 15px 0 0 0;
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: #d4af37;
-            text-shadow: 0 0 8px rgba(212, 175, 55, 0.3);
-        }
+        .quran-text { margin: 15px 0 0 0; font-size: 1.2rem; font-weight: bold; color: #d4af37; text-shadow: 0 0 8px rgba(212, 175, 55, 0.3); }
 
         .cat-list { display: flex; flex-direction: column; align-items: center; padding: 25px; gap: 15px; }
 
         .btn-cat { 
-            width: 100%; 
-            max-width: 400px; 
-            padding: 18px; 
-            background: rgba(255, 255, 255, 0.05); 
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1); 
-            color: #d4af37; 
-            border-radius: 15px; 
-            font-size: 1.1rem; 
-            font-weight: bold; 
-            cursor: pointer; 
-            transition: 0.2s; 
+            width: 100%; max-width: 400px; padding: 18px; background: rgba(255, 255, 255, 0.05); 
+            backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); 
+            color: #d4af37; border-radius: 15px; font-size: 1.1rem; font-weight: bold; cursor: pointer; transition: 0.2s; 
         }
-
-        .btn-cat:active { transform: scale(0.98); background: rgba(255, 255, 255, 0.1); }
 
         .res-view { width: 92%; max-width: 700px; margin: 0 auto; display: none; padding-bottom: 40px; }
 
+        /* تعديل الكارد ليظهر كزر قابل للضغط */
         .card { 
-            padding: 20px; 
-            border-radius: 15px; 
-            background: rgba(255, 255, 255, 0.03); 
-            backdrop-filter: blur(5px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            margin-bottom: 15px; 
+            padding: 20px; border-radius: 15px; background: rgba(255, 255, 255, 0.03); 
+            backdrop-filter: blur(5px); border: 1px solid rgba(255, 255, 255, 0.1); margin-bottom: 15px; 
+            cursor: pointer; transition: 0.3s;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .card:hover { background: rgba(212, 175, 55, 0.1); border-color: rgba(212, 175, 55, 0.4); transform: translateX(-5px); }
+
+        .card h3 { color: #d4af37; font-size: 1rem; margin: 0; flex: 1; }
+        /* أيقونة صغيرة تدل على الفتح */
+        .card::after { content:''; font-size: 1.2rem; opacity: 0.7; }
+        
+        /* تصميم النافذة المنبثقة (Modal) */
+        .modal-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(8px);
+            z-index: 1000; justify-content: center; align-items: center;
+            animation: fadeIn 0.3s ease;
         }
 
-        .card h3 { color: #d4af37; font-size: 1rem; border-bottom: 1px solid rgba(212, 175, 55, 0.2); padding-bottom: 8px; margin-top: 0; }
-        .card p { font-size: 0.95rem; line-height: 1.7; color: #eee; margin-bottom: 0; white-space: pre-wrap; }
+        .modal-content {
+            background: linear-gradient(135deg, #1e3c4a, #152930);
+            width: 90%; max-width: 600px; max-height: 85vh;
+            border-radius: 20px; border: 1px solid #d4af37;
+            padding: 25px; position: relative;
+            overflow-y: auto; box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            animation: slideUp 0.4s ease;
+        }
+
+        .modal-header { font-size: 1.3rem; color: #d4af37; font-weight: bold; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px dashed rgba(255,255,255,0.2); }
+        .modal-body { font-size: 1.1rem; line-height: 1.8; color: #f0f0f0; white-space: pre-wrap; text-align: justify; }
         
+        .close-modal {
+            position: absolute; top: 15px; left: 15px;
+            background: rgba(255,255,255,0.1); border: none; color: #fff;
+            width: 35px; height: 35px; border-radius: 50%;
+            font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center;
+        }
+        .close-modal:hover { background: #d4af37; color: #000; }
+
+        /* زر بحث جوجل المخصص */
+        .google-search-btn {
+            display: block; width: 100%; margin-top: 20px; padding: 12px;
+            background: rgba(66, 133, 244, 0.2); border: 1px solid #4285f4; color: white;
+            border-radius: 12px; cursor: pointer; text-align: center; text-decoration: none;
+            font-size: 0.85rem; font-weight: bold; transition: 0.3s;
+        }
+        .google-search-btn:hover { background: rgba(66, 133, 244, 0.4); }
+
         .highlight { background: rgba(212, 175, 55, 0.4); color: white; padding: 0 2px; border-radius: 3px; }
         .back-btn { background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.2); padding: 8px 15px; border-radius: 10px; margin: 15px 0; cursor: pointer; font-size: 0.85rem; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
     </style>
 </head>
 <body>
@@ -135,17 +118,13 @@
     </div>
 
     <div class="quote-box">
-        <p class="quote-text">
-            أبي عبد الله عليه السلام قال: لوددت أن أصحابي ضربت رؤوسهم بالسياط حتى يتفقهوا
-        </p>
+        <p class="quote-text">أبي عبد الله عليه السلام قال: لوددت أن أصحابي ضربت رؤوسهم بالسياط حتى يتفقهوا</p>
         <div style="margin: 12px auto; height: 1px; width: 50%; background: linear-gradient(90deg, transparent, #d4af37, transparent);"></div>
         <p class="quran-text">لَذِكْرَى لِمَنْ كَانَ لَهُ قَلْبٌ</p>
     </div>
 </div>
 
-<div id="view1" class="cat-list">
-    <p>جارِ تحميل البحوث...</p>
-</div>
+<div id="view1" class="cat-list"><p>جارِ التحميل...</p></div>
 
 <div id="view2" class="res-view">
     <button class="back-btn" onclick="showV1()">🔙 العودة للأقسام</button>
@@ -153,10 +132,21 @@
     <div style="text-align: center; margin-bottom: 20px;">
         <input type="text" id="innerSearch" 
                style="width:220px; padding:12px; border-radius:12px; border:1px solid rgba(255,255,255,0.2); background:rgba(0,0,0,0.3); color:white; outline:none; font-size: 0.85rem;" 
-               placeholder="🔍 بحث االترابية  ...">
+               placeholder="🔍 بحث في المكتبة...">
     </div>
 
     <div id="output"></div>
+</div>
+
+<div id="contentModal" class="modal-overlay" onclick="closeModal(event)">
+    <div class="modal-content">
+        <button class="close-modal" onclick="forceClose()">✕</button>
+        <div id="modalTitle" class="modal-header"></div>
+        <div id="modalBody" class="modal-body"></div>
+        <a id="googleBtn" href="#" target="_blank" class="google-search-btn" style="display: none;">
+            البحث عن الرواية في المصادر (Google) 🌐
+        </a>
+    </div>
 </div>
 
 <script>
@@ -175,15 +165,9 @@
     let dbData = {}; 
     let currentCategory = "";
 
-    // دالة البحث الذكي: تتجاهل التشكيل والهمزات
     function normalizeArabic(text) {
         if (!text) return "";
-        return text
-            .replace(/[\u064B-\u0652]/g, "") 
-            .replace(/[أآإ]/g, "ا")           
-            .replace(/ة/g, "ه")              
-            .replace(/ى/g, "ي")              
-            .toLowerCase().trim();
+        return text.replace(/[\u064B-\u0652]/g, "").replace(/[أآإ]/g, "ا").replace(/ة/g, "ه").replace(/ى/g, "ي").toLowerCase().trim();
     }
 
     firestore.collection("researches").onSnapshot((snapshot) => {
@@ -196,19 +180,12 @@
         });
         dbData = tempDB;
         init();
-        if (currentCategory && document.getElementById('view2').style.display === 'block') {
-            renderResearches(dbData[currentCategory] || []);
-        }
     });
 
     function init() {
         const v1 = document.getElementById('view1'); 
         v1.innerHTML = '';
-        const keys = Object.keys(dbData);
-        const filter = normalizeArabic(document.getElementById('mainSearch').value);
-        
-        keys.forEach(c => {
-            if (filter && !normalizeArabic(c).includes(filter)) return;
+        Object.keys(dbData).forEach(c => {
             const b = document.createElement('button');
             b.className = 'btn-cat';
             b.innerText = c;
@@ -222,36 +199,70 @@
         document.getElementById('view1').style.display = 'none';
         document.getElementById('mainH').style.display = 'none';
         document.getElementById('view2').style.display = 'block';
-        document.getElementById('innerSearch').value = '';
         renderResearches(dbData[c]);
-        window.scrollTo(0,0);
     }
 
     function renderResearches(data, term = "") {
         const out = document.getElementById('output');
-        out.innerHTML = `<h2 style="color:#d4af37; text-align:center; font-size: 1.3rem; margin-bottom: 20px;">${currentCategory}</h2>`;
+        out.innerHTML = `<h2 style="color:#d4af37; text-align:center; margin-bottom:20px;">${currentCategory}</h2>`;
         
         if (!data) return;
+
         const cleanTerm = normalizeArabic(term);
-
+        
         data.forEach(r => {
-            const cleanTitle = normalizeArabic(r.t);
-            const cleanText = normalizeArabic(r.x);
-
-            if(cleanTerm && !cleanTitle.includes(cleanTerm) && !cleanText.includes(cleanTerm)) return;
+            // منطق البحث: البحث في العنوان والمحتوى
+            if(cleanTerm && !normalizeArabic(r.t).includes(cleanTerm) && !normalizeArabic(r.x).includes(cleanTerm)) return;
             
-            let displayText = r.x;
-            if(term && term.length > 1) {
-                const reg = new RegExp(`(${term.split('').join('[\\u064B-\\u0652]*')})`, "gi");
-                displayText = displayText.replace(reg, '<span class="highlight">$1</span>');
-            }
-
-            out.innerHTML += `
-                <div class="card">
-                    <h3>${r.t}</h3>
-                    <p>${displayText}</p>
-                </div>`;
+            // إنشاء البطاقة (عنوان فقط)
+            const div = document.createElement('div');
+            div.className = 'card';
+            div.innerHTML = `<h3>${r.t}</h3>`; // نعرض العنوان فقط
+            
+            // عند الضغط، نفتح النافذة
+            div.onclick = () => openModal(r.t, r.x, term);
+            
+            out.appendChild(div);
         });
+    }
+
+    // وظيفة فتح النافذة
+    function openModal(title, content, searchTerm) {
+        const modal = document.getElementById('contentModal');
+        const mTitle = document.getElementById('modalTitle');
+        const mBody = document.getElementById('modalBody');
+        const gBtn = document.getElementById('googleBtn');
+
+        mTitle.innerText = title;
+
+        // تلوين النص المبحوث عنه داخل النافذة
+        let displayText = content;
+        if(searchTerm && searchTerm.length > 1) {
+            const reg = new RegExp(`(${searchTerm.split('').join('[\\u064B-\\u0652]*')})`, "gi");
+            displayText = displayText.replace(reg, '<span class="highlight">$1</span>');
+        }
+        mBody.innerHTML = displayText;
+
+        // إعداد زر جوجل داخل النافذة
+        if(searchTerm && searchTerm.length > 2) {
+            gBtn.style.display = "block";
+            const sites = "site:shiaonlinelibrary.com OR site:al-rafed.net OR site:hodaalquran.com";
+            gBtn.href = `https://www.google.com/search?q=${encodeURIComponent(searchTerm)} ${sites}`;
+        } else {
+            gBtn.style.display = "none";
+        }
+
+        modal.style.display = 'flex';
+    }
+
+    // وظائف إغلاق النافذة
+    function closeModal(e) {
+        if (e.target.id === 'contentModal') {
+            document.getElementById('contentModal').style.display = 'none';
+        }
+    }
+    function forceClose() {
+        document.getElementById('contentModal').style.display = 'none';
     }
 
     document.getElementById('innerSearch').oninput = function(e) {
