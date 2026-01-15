@@ -2,278 +2,291 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>بحوث الترابية </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>مكتبة الترابية</title>
+    
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    
     <style>
-        body { 
-            font-family: 'Segoe UI', sans-serif; 
-            background: radial-gradient(circle at center, #2c5364, #203a43, #0f2027); 
-            margin: 0; direction: rtl; color: white; min-height: 100vh; background-attachment: fixed;
-        }
-
-        /* الهيدر المطور */
-        .header { 
-            display: flex; flex-direction: column; background: rgba(255, 255, 255, 0.05); 
-            backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
-            padding: 30px 20px; border-bottom: 2px solid rgba(212, 175, 55, 0.3);
-        }
-
-        .header-top { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 25px; }
-
-        .home-btn {
-            background: rgba(212, 175, 55, 0.15); color: #d4af37; border: 1px solid #d4af37;
-            padding: 8px 15px; border-radius: 20px; text-decoration: none; font-size: 0.85rem; font-weight: bold;
-        }
-
-        .inner-search { 
-            width: 110px; padding: 8px 30px 8px 10px; border-radius: 15px; 
-            border: 1px solid rgba(255, 255, 255, 0.3); 
-            background: rgba(255, 255, 255, 0.1) url('https://cdn-icons-png.flaticon.com/512/622/622669.png') no-repeat right 10px center;
-            background-size: 14px; color: white; font-size: 0.8rem; outline: none; 
-        }
-
-        .quote-box {
-            text-align: center; max-width: 600px; margin: 0 auto; background: rgba(0, 0, 0, 0.3);
-            padding: 20px; border-radius: 20px; border: 1px dashed rgba(212, 175, 55, 0.4);
-        }
-
-        .quran-text { margin: 15px 0 0 0; font-size: 1.2rem; font-weight: bold; color: #d4af37; text-shadow: 0 0 8px rgba(212, 175, 55, 0.3); }
-
-        .cat-list { display: flex; flex-direction: column; align-items: center; padding: 25px; gap: 15px; }
-
-        .btn-cat { 
-            width: 100%; max-width: 400px; padding: 18px; background: rgba(255, 255, 255, 0.05); 
-            backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); 
-            color: #d4af37; border-radius: 15px; font-size: 1.1rem; font-weight: bold; cursor: pointer; transition: 0.2s; 
-        }
-
-        .res-view { width: 92%; max-width: 700px; margin: 0 auto; display: none; padding-bottom: 40px; }
-
-        /* تعديل الكارد ليظهر كزر قابل للضغط */
-        .card { 
-            padding: 20px; border-radius: 15px; background: rgba(255, 255, 255, 0.03); 
-            backdrop-filter: blur(5px); border: 1px solid rgba(255, 255, 255, 0.1); margin-bottom: 15px; 
-            cursor: pointer; transition: 0.3s;
-            display: flex; justify-content: space-between; align-items: center;
-        }
-        .card:hover { background: rgba(212, 175, 55, 0.1); border-color: rgba(212, 175, 55, 0.4); transform: translateX(-5px); }
-
-        .card h3 { color: #d4af37; font-size: 1rem; margin: 0; flex: 1; }
-        /* أيقونة صغيرة تدل على الفتح */
-        .card::after { content:''; font-size: 1.2rem; opacity: 0.7; }
+        :root { --bg-page: #f8fafc; --accent-green: #16a34a; }
+        body { font-family: 'Cairo', sans-serif; background-color: var(--bg-page); transition: background 0.3s ease; overflow: hidden; }
         
-        /* تصميم النافذة المنبثقة (Modal) */
-        .modal-overlay {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(8px);
-            z-index: 1000; justify-content: center; align-items: center;
-            animation: fadeIn 0.3s ease;
-        }
+        body.theme-white { --bg-reader: #ffffff; --text-reader: #1e293b; }
+        body.theme-dark { --bg-reader: #121212; --text-reader: #e2e8f0; }
+        body.theme-sepia { --bg-reader: #f4ecd8; --text-reader: #5b4636; }
 
-        .modal-content {
-            background: linear-gradient(135deg, #1e3c4a, #152930);
-            width: 90%; max-width: 600px; max-height: 85vh;
-            border-radius: 20px; border: 1px solid #d4af37;
-            padding: 25px; position: relative;
-            overflow-y: auto; box-shadow: 0 10px 40px rgba(0,0,0,0.5);
-            animation: slideUp 0.4s ease;
-        }
-
-        .modal-header { font-size: 1.3rem; color: #d4af37; font-weight: bold; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px dashed rgba(255,255,255,0.2); }
-        .modal-body { font-size: 1.1rem; line-height: 1.8; color: #f0f0f0; white-space: pre-wrap; text-align: justify; }
+        #reader-view { background-color: var(--bg-reader); color: var(--text-reader); }
         
-        .close-modal {
-            position: absolute; top: 15px; left: 15px;
-            background: rgba(255,255,255,0.1); border: none; color: #fff;
-            width: 35px; height: 35px; border-radius: 50%;
-            font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center;
+        .highlight { 
+            background: linear-gradient(to top, rgba(255, 193, 7, 0.4) 100%, transparent 0);
+            display: inline;
+            border-radius: 2px;
+            padding: 0;
+            box-decoration-break: clone;
+            -webkit-box-decoration-break: clone;
+            font-weight: bold;
         }
-        .close-modal:hover { background: #d4af37; color: #000; }
 
-        /* زر بحث جوجل المخصص */
-        .google-search-btn {
-            display: block; width: 100%; margin-top: 20px; padding: 12px;
-            background: rgba(66, 133, 244, 0.2); border: 1px solid #4285f4; color: white;
-            border-radius: 12px; cursor: pointer; text-align: center; text-decoration: none;
-            font-size: 0.85rem; font-weight: bold; transition: 0.3s;
+        #search-overlay, #internal-search-overlay {
+            transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+            transform: translateY(-100%);
+            background-color: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
         }
-        .google-search-btn:hover { background: rgba(66, 133, 244, 0.4); }
+        #search-overlay.active, #internal-search-overlay.active { transform: translateY(0); }
 
-        .highlight { background: rgba(212, 175, 55, 0.4); color: white; padding: 0 2px; border-radius: 3px; }
-        .back-btn { background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.2); padding: 8px 15px; border-radius: 10px; margin: 15px 0; cursor: pointer; font-size: 0.85rem; }
+        .book-content { font-family: 'Amiri', serif; line-height: 2.3; font-size: 1.55rem; text-align: justify; }
+        .filter-btn.active { background: var(--accent-green); color: white; }
 
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .res-card, .internal-res-card {
+            background: white; padding: 16px; border-radius: 20px;
+            border-right: 4px solid #fbbf24; box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            margin-bottom: 12px; cursor: pointer; transition: 0.2s; color: #1e293b;
+        }
+        
+        /* تحسين السكرول للحاويات */
+        .custom-scroll {
+            overflow-y: auto;
+            overflow-x: hidden;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+        .custom-scroll::-webkit-scrollbar { display: none; }
     </style>
 </head>
-<body>
+<body class="theme-white h-screen flex flex-col">
 
-<div class="header" id="mainH">
-    <div class="header-top">
-        <a class="home-btn" href="index.html">🏠 الرئيسية</a>
-        <h2 style="margin:0; font-size: 1.1rem; color: #d4af37;">بحوث الترابية</h2>
-        <input type="text" id="mainSearch" class="inner-search" placeholder="بحث..." oninput="init()">
-    </div>
+    <div id="main-view" class="flex-1 flex flex-col h-full overflow-hidden">
+        <header class="p-6 flex justify-between items-center shrink-0">
+            <div>
+                <h1 class="text-2xl font-black text-slate-900">المكتبة</h1>
+                <p class="text-[10px] text-slate-400 font-bold border-r-2 border-green-600 pr-2 mt-1 uppercase">الترابية </p>
+            </div>
+            <button onclick="openGlobalSearch()" class="w-12 h-12 bg-white rounded-2xl shadow-sm flex items-center justify-center border border-slate-100">🔍</button>
+        </header>
 
-    <div class="quote-box">
-        <p class="quote-text">أبي عبد الله عليه السلام قال: لوددت أن أصحابي ضربت رؤوسهم بالسياط حتى يتفقهوا</p>
-        <div style="margin: 12px auto; height: 1px; width: 50%; background: linear-gradient(90deg, transparent, #d4af37, transparent);"></div>
-        <p class="quran-text">لَذِكْرَى لِمَنْ كَانَ لَهُ قَلْبٌ</p>
-    </div>
-</div>
-
-<div id="view1" class="cat-list"><p>جارِ التحميل...</p></div>
-
-<div id="view2" class="res-view">
-    <button class="back-btn" onclick="showV1()">🔙 العودة للأقسام</button>
-    
-    <div style="text-align: center; margin-bottom: 20px;">
-        <input type="text" id="innerSearch" 
-               style="width:220px; padding:12px; border-radius:12px; border:1px solid rgba(255,255,255,0.2); background:rgba(0,0,0,0.3); color:white; outline:none; font-size: 0.85rem;" 
-               placeholder="🔍 بحث في المكتبة...">
-    </div>
-
-    <div id="output"></div>
-</div>
-
-<div id="contentModal" class="modal-overlay" onclick="closeModal(event)">
-    <div class="modal-content">
-        <button class="close-modal" onclick="forceClose()">✕</button>
-        <div id="modalTitle" class="modal-header"></div>
-        <div id="modalBody" class="modal-body"></div>
-        <a id="googleBtn" href="#" target="_blank" class="google-search-btn" style="display: none;">
-            البحث عن الرواية في المصادر (Google) 🌐
-        </a>
-    </div>
-</div>
-
-<script>
-    const firebaseConfig = {
-        apiKey: "AIzaSyA3Qp8zzy6FIs1g5ed0HXBkd9FykxGvGR8",
-        authDomain: "alturbya.firebaseapp.com",
-        projectId: "alturbya",
-        storageBucket: "alturbya.firebasestorage.app",
-        messagingSenderId: "481479317412",
-        appId: "1:481479317412:web:8f070dbc4c87ba5aa59331"
-    };
-
-    if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-    const firestore = firebase.firestore();
-
-    let dbData = {}; 
-    let currentCategory = "";
-
-    function normalizeArabic(text) {
-        if (!text) return "";
-        return text.replace(/[\u064B-\u0652]/g, "").replace(/[أآإ]/g, "ا").replace(/ة/g, "ه").replace(/ى/g, "ي").toLowerCase().trim();
-    }
-
-    firestore.collection("researches").onSnapshot((snapshot) => {
-        let tempDB = {};
-        snapshot.forEach(doc => {
-            const item = doc.data();
-            const cat = item.category || "عام";
-            if (!tempDB[cat]) tempDB[cat] = [];
-            tempDB[cat].push(item);
-        });
-        dbData = tempDB;
-        init();
-    });
-
-    function init() {
-        const v1 = document.getElementById('view1'); 
-        v1.innerHTML = '';
-        Object.keys(dbData).forEach(c => {
-            const b = document.createElement('button');
-            b.className = 'btn-cat';
-            b.innerText = c;
-            b.onclick = () => showV2(c);
-            v1.appendChild(b);
-        });
-    }
-
-    function showV2(c) {
-        currentCategory = c;
-        document.getElementById('view1').style.display = 'none';
-        document.getElementById('mainH').style.display = 'none';
-        document.getElementById('view2').style.display = 'block';
-        renderResearches(dbData[c]);
-    }
-
-    function renderResearches(data, term = "") {
-        const out = document.getElementById('output');
-        out.innerHTML = `<h2 style="color:#d4af37; text-align:center; margin-bottom:20px;">${currentCategory}</h2>`;
-        
-        if (!data) return;
-
-        const cleanTerm = normalizeArabic(term);
-        
-        data.forEach(r => {
-            // منطق البحث: البحث في العنوان والمحتوى
-            if(cleanTerm && !normalizeArabic(r.t).includes(cleanTerm) && !normalizeArabic(r.x).includes(cleanTerm)) return;
+        <div class="flex-1 custom-scroll px-4 pb-28">
+            <div id="categories-container" class="grid grid-cols-2 gap-4"></div>
             
-            // إنشاء البطاقة (عنوان فقط)
-            const div = document.createElement('div');
-            div.className = 'card';
-            div.innerHTML = `<h3>${r.t}</h3>`; // نعرض العنوان فقط
-            
-            // عند الضغط، نفتح النافذة
-            div.onclick = () => openModal(r.t, r.x, term);
-            
-            out.appendChild(div);
+            <div id="research-list-container" class="hidden">
+                <div class="sticky top-0 bg-[#f8fafc]/90 backdrop-blur-md py-4 z-10 flex items-center justify-between mb-5 px-2">
+                    <button onclick="showCategories()" class="text-green-600 text-xs font-black bg-green-50 px-4 py-2 rounded-xl">🔙 العودة</button>
+                    <span id="current-cat-name" class="text-[10px] font-black text-slate-500 bg-slate-100 px-3 py-1.5 rounded-full uppercase"></span>
+                </div>
+                <div id="research-list" class="space-y-3 pb-10"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="search-overlay" class="fixed inset-0 z-[100] flex flex-col">
+        <div class="p-6 border-b border-slate-100 flex items-center gap-4 shrink-0">
+            <button onclick="closeGlobalSearch()" class="w-10 h-10 flex items-center justify-center bg-slate-50 rounded-full">✕</button>
+            <input type="text" id="global-search-input" oninput="handleGlobalSearch()" placeholder="ابدأ البحث ..." class="flex-1 p-4 bg-slate-100 rounded-2xl border-none outline-none font-bold">
+        </div>
+        <div class="px-6 py-4 flex gap-3 overflow-x-auto no-scrollbar shrink-0">
+            <button onclick="setSearchFilter('cats')" class="px-5 py-2 rounded-xl text-[11px] font-black filter-btn active" id="f-cats">القسم</button>
+            <button onclick="setSearchFilter('titles')" class="px-5 py-2 rounded-xl text-[11px] font-black filter-btn" id="f-titles">عناوين الأقسام</button>
+            <button onclick="setSearchFilter('content')" class="px-5 py-2 rounded-xl text-[11px] font-black filter-btn" id="f-content">المحتوى</button>
+        </div>
+        <div id="global-results" class="flex-1 custom-scroll px-6 pb-10"></div>
+    </div>
+
+    <div id="internal-search-overlay" class="fixed inset-0 z-[130] flex flex-col">
+        <div class="p-6 border-b border-slate-100 flex items-center gap-4 shrink-0">
+            <button onclick="closeInternalSearch()" class="w-10 h-10 flex items-center justify-center bg-slate-50 rounded-full text-slate-400">✕</button>
+            <input type="text" id="reader-internal-input" oninput="internalSearchInContent()" placeholder="بحث سريع في الصفحات..." class="flex-1 p-4 bg-slate-100 rounded-2xl border-none outline-none font-bold">
+        </div>
+        <div id="internal-results" class="flex-1 custom-scroll px-6 py-6"></div>
+    </div>
+
+    <div id="reader-view" class="hidden fixed inset-0 z-[110] flex flex-col">
+        <header class="h-16 flex items-center px-4 border-b border-black/5 shrink-0">
+            <button onclick="closeReader()" class="w-10 h-10 flex items-center justify-center rounded-xl bg-black/5">✕</button>
+            <div class="flex-1 px-4 text-center truncate font-bold text-[10px] opacity-60 uppercase" id="reader-title"></div>
+            <div class="flex gap-2 items-center">
+                <button onclick="openInternalSearch()" class="w-9 h-9 rounded-full bg-black/5 flex items-center justify-center">🔍</button>
+                <button onclick="setTheme('white')" class="w-6 h-6 rounded-full bg-white border border-slate-300"></button>
+                <button onclick="setTheme('sepia')" class="w-6 h-6 rounded-full bg-[#f4ecd8] border border-amber-300"></button>
+                <button onclick="setTheme('dark')" class="w-6 h-6 rounded-full bg-slate-900 border border-slate-700"></button>
+            </div>
+        </header>
+
+        <main id="reader-scroll-area" class="flex-1 custom-scroll px-6 py-10">
+            <div id="reader-content" class="book-content max-w-xl mx-auto"></div>
+        </main>
+
+        <footer class="h-20 flex items-center justify-center shrink-0">
+            <div class="flex items-center gap-10 bg-slate-900 text-white px-8 py-3 rounded-full shadow-2xl">
+                <button onclick="changePage(-1)">◀</button>
+                <span id="page-indicator" class="text-[11px] font-black min-w-[50px] text-center"></span>
+                <button onclick="changePage(1)">▶</button>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyA3Qp8zzy6FIs1g5ed0HXBkd9FykxGvGR8",
+            authDomain: "alturbya.firebaseapp.com",
+            projectId: "alturbya",
+            storageBucket: "alturbya.firebasestorage.app",
+            appId: "1:481479317412:web:8f070dbc4c87ba5aa59331"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        let allResearches = [];
+        let currentPages = [];
+        let currentPageIndex = 0;
+        let searchFilter = 'cats';
+        let highlightQuery = "";
+
+        db.collection("researches").onSnapshot(snap => {
+            allResearches = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            renderCategories();
         });
-    }
 
-    // وظيفة فتح النافذة
-    function openModal(title, content, searchTerm) {
-        const modal = document.getElementById('contentModal');
-        const mTitle = document.getElementById('modalTitle');
-        const mBody = document.getElementById('modalBody');
-        const gBtn = document.getElementById('googleBtn');
-
-        mTitle.innerText = title;
-
-        // تلوين النص المبحوث عنه داخل النافذة
-        let displayText = content;
-        if(searchTerm && searchTerm.length > 1) {
-            const reg = new RegExp(`(${searchTerm.split('').join('[\\u064B-\\u0652]*')})`, "gi");
-            displayText = displayText.replace(reg, '<span class="highlight">$1</span>');
-        }
-        mBody.innerHTML = displayText;
-
-        // إعداد زر جوجل داخل النافذة
-        if(searchTerm && searchTerm.length > 2) {
-            gBtn.style.display = "block";
-            const sites = "site:shiaonlinelibrary.com OR site:al-rafed.net OR site:hodaalquran.com";
-            gBtn.href = `https://www.google.com/search?q=${encodeURIComponent(searchTerm)} ${sites}`;
-        } else {
-            gBtn.style.display = "none";
+        function splitText(t) {
+            const size = 1200;
+            const chunks = [];
+            for (let i = 0; i < (t || "").length; i += size) { chunks.push(t.substring(i, i + size)); }
+            return chunks;
         }
 
-        modal.style.display = 'flex';
-    }
+        function handleGlobalSearch() {
+            const q = document.getElementById('global-search-input').value.trim();
+            const resDiv = document.getElementById('global-results');
+            highlightQuery = q;
+            if(!q) { resDiv.innerHTML = ""; return; }
+            let results = [];
 
-    // وظائف إغلاق النافذة
-    function closeModal(e) {
-        if (e.target.id === 'contentModal') {
-            document.getElementById('contentModal').style.display = 'none';
+            if (searchFilter === 'cats') {
+                [...new Set(allResearches.map(r => r.category || "عام"))].forEach(cat => {
+                    if (cat.includes(q)) results.push({ type: 'category', title: cat });
+                });
+            }
+            if (searchFilter === 'titles') {
+                allResearches.forEach(r => {
+                    if (r.t.includes(q)) results.push({ ...r, type: 'title', title: r.t, pIdx: 0 });
+                });
+            }
+            if (searchFilter === 'content') {
+                allResearches.forEach(r => {
+                    const pgs = r.pages || splitText(r.x);
+                    pgs.forEach((p, idx) => {
+                        if (p.includes(q)) {
+                            const start = Math.max(0, p.indexOf(q) - 40);
+                            results.push({ ...r, type: 'content', title: r.t, pIdx: idx, snip: "..." + p.substring(start, start + 80).replace(/\n/g, ' ') + "..." });
+                        }
+                    });
+                });
+            }
+            resDiv.innerHTML = results.map(r => `
+                <div onclick="${r.type === 'category' ? `showResearchInCat('${r.title}'); closeGlobalSearch();` : `openReader('${r.id}', ${r.pIdx})`}" 
+                     class="res-card ${r.type === 'category' ? 'border-blue-500' : 'border-green-500'}">
+                    <h4 class="text-[13px] font-black">${r.title}</h4>
+                    ${r.snip ? `<p class="text-[11px] text-slate-500 mt-2 bg-slate-50 p-2 rounded-lg leading-relaxed">${r.snip}</p>` : ''}
+                </div>
+            `).join('');
         }
-    }
-    function forceClose() {
-        document.getElementById('contentModal').style.display = 'none';
-    }
 
-    document.getElementById('innerSearch').oninput = function(e) {
-        renderResearches(dbData[currentCategory], e.target.value);
-    };
+        function internalSearchInContent() {
+            const q = document.getElementById('reader-internal-input').value.trim();
+            const resArea = document.getElementById('internal-results');
+            highlightQuery = q;
+            if(!q) { resArea.innerHTML = ""; return; }
+            let found = [];
+            currentPages.forEach((text, index) => {
+                if(text.includes(q)) {
+                    const start = Math.max(0, text.indexOf(q) - 40);
+                    found.push({ page: index, snippet: "..." + text.substring(start, start + 90).replace(/\n/g, ' ') + "..." });
+                }
+            });
+            resArea.innerHTML = found.map(f => `
+                <div onclick="goToResultPage(${f.page})" class="internal-res-card">
+                    <span class="text-[10px] font-black text-amber-600 block mb-1">الصفحة ${f.page+1}</span>
+                    <p class="text-[12px] text-slate-600 font-bold leading-relaxed">${f.snippet}</p>
+                </div>
+            `).join('') || '<div class="text-center text-slate-300">لا توجد نتائج</div>';
+        }
 
-    function showV1() {
-        document.getElementById('view1').style.display = 'flex';
-        document.getElementById('mainH').style.display = 'flex';
-        document.getElementById('view2').style.display = 'none';
-    }
-</script>
+        function goToResultPage(p) { currentPageIndex=p; renderCurrentPage(); closeInternalSearch(); setTimeout(scrollToHighlight, 300); }
+
+        function openReader(id, pIdx = 0) {
+            const res = allResearches.find(r => r.id === id);
+            currentPages = res.pages || splitText(res.x);
+            currentPageIndex = pIdx;
+            document.getElementById('reader-title').innerText = res.t;
+            document.getElementById('reader-view').classList.remove('hidden');
+            closeGlobalSearch();
+            renderCurrentPage();
+        }
+
+        function renderCurrentPage() {
+            let text = currentPages[currentPageIndex];
+            
+            // --- التعديل هنا: ضمان ظهور الأسطر الجديدة في القراءة ---
+            // يقوم باستبدال أي سطر جديد (Enter) بوسم <br> ليظهر في HTML
+            text = text.replace(/\n/g, '<br>'); 
+            
+            if (highlightQuery && highlightQuery.length > 1) {
+                const escapedQuery = highlightQuery.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
+                const regex = new RegExp(`(${escapedQuery})`, "g");
+                let isFirst = true;
+                text = text.replace(regex, (match) => {
+                    const idTag = isFirst ? 'id="target-word"' : '';
+                    isFirst = false;
+                    return `<span ${idTag} class="highlight">${match}</span>`;
+                });
+            }
+            document.getElementById('reader-content').innerHTML = text;
+            document.getElementById('page-indicator').innerText = `${currentPageIndex + 1} / ${currentPages.length}`;
+            document.getElementById('reader-scroll-area').scrollTop = 0;
+            if(highlightQuery) setTimeout(scrollToHighlight, 200);
+        }
+
+        function scrollToHighlight() {
+            const target = document.getElementById('target-word');
+            if (target) target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        function renderCategories() {
+            const container = document.getElementById('categories-container');
+            const cats = [...new Set(allResearches.map(r => r.category || "عام"))];
+            container.innerHTML = cats.map(cat => `
+                <div onclick="showResearchInCat('${cat}')" class="bg-white p-6 rounded-3xl flex flex-col items-center gap-3 border border-slate-100 shadow-sm active:scale-95 transition">
+                   
+                    <span class="font-black text-slate-700 text-[11px] text-center">${cat}</span>
+                </div>
+            `).join('');
+        }
+
+        function showResearchInCat(cat) {
+            document.getElementById('categories-container').classList.add('hidden');
+            document.getElementById('research-list-container').classList.remove('hidden');
+            document.getElementById('current-cat-name').innerText = cat;
+            const filtered = allResearches.filter(r => (r.category || "عام") === cat);
+            document.getElementById('research-list').innerHTML = filtered.map(r => `
+                <div onclick="openReader('${r.id}')" class="p-4 bg-white border border-slate-100 rounded-2xl flex justify-between items-center shadow-sm active:scale-95 transition">
+                    <span class="text-[12px] font-bold text-slate-700">${r.t}</span>
+                    <span class="text-slate-200">📖</span>
+                </div>
+            `).join('');
+        }
+
+        function showCategories() { document.getElementById('categories-container').classList.remove('hidden'); document.getElementById('research-list-container').classList.add('hidden'); }
+        function setTheme(m) { document.body.className = 'theme-' + m; }
+        function openGlobalSearch() { document.getElementById('search-overlay').classList.add('active'); document.getElementById('global-search-input').focus(); }
+        function closeGlobalSearch() { document.getElementById('search-overlay').classList.remove('active'); }
+        function openInternalSearch() { document.getElementById('internal-search-overlay').classList.add('active'); document.getElementById('reader-internal-input').focus(); }
+        function closeInternalSearch() { document.getElementById('internal-search-overlay').classList.remove('active'); }
+        function closeReader() { document.getElementById('reader-view').classList.add('hidden'); highlightQuery=""; }
+        function changePage(d) { if(currentPageIndex+d >= 0 && currentPageIndex+d < currentPages.length){ currentPageIndex+=d; renderCurrentPage(); } }
+        function setSearchFilter(f) { searchFilter = f; document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.toggle('active', btn.id === 'f-'+f)); handleGlobalSearch(); }
+    </script>
 </body>
-</html>
+    </html>
